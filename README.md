@@ -138,6 +138,104 @@ claude
 sudo docker-compose down -v
 ```
 
+## 📚 Interactive Learning Exercises
+
+This project includes comprehensive hands-on exercises to master each Hadoop ecosystem component. All exercises are located in the `exercises/` directory.
+
+### 🚀 Quick Start - Run All Exercises
+
+```bash
+cd exercises/
+chmod +x run_all_exercises.sh
+sudo ./run_all_exercises.sh
+```
+
+This interactive script guides you through all modules with pauses for review and learning summaries.
+
+### 📖 Exercise Modules
+
+#### 1️⃣ HDFS Operations (`hdfs_exercises.sh`)
+**Duration:** ~10 minutes
+
+Learn essential HDFS commands and operations:
+- Upload/download files to/from HDFS
+- Create and manage directory structures
+- Set and verify replication factors
+- Copy and move files within HDFS
+- Use wildcards and check statistics
+- Monitor HDFS health and capacity
+
+```bash
+sudo ./exercises/hdfs_exercises.sh
+```
+
+#### 2️⃣ MapReduce Programming (`mapreduce_exercises.sh`)
+**Duration:** ~15 minutes
+
+Master the mapper/reducer pattern with practical examples:
+- Category sales aggregation
+- Product quantity analysis
+- Top spending customers identification
+- Sales by hour of day analytics
+- Custom MapReduce job creation
+
+```bash
+sudo ./exercises/mapreduce_exercises.sh
+```
+
+#### 3️⃣ Hive SQL & Optimization (`hive_exercises.sh`)
+**Duration:** ~15 minutes
+
+Optimize big data queries with Hive:
+- Create and query Hive tables
+- Implement partitioning for performance
+- Use bucketing for optimized joins
+- Compare file formats (TextFile vs ORC vs Parquet)
+- Apply Cost-Based Optimizer (CBO)
+- Enable vectorization for faster processing
+
+```bash
+sudo ./exercises/hive_exercises.sh
+```
+
+#### 4️⃣ Spark Analytics (`spark_exercises.sh`)
+**Duration:** ~20 minutes
+
+Advanced analytics with Apache Spark:
+- DataFrame operations and transformations
+- Spark SQL analytics
+- Customer segmentation (VIP/Regular/Occasional)
+- Real-time streaming simulation
+- Performance optimization with caching
+- Broadcast joins for large datasets
+
+```bash
+sudo ./exercises/spark_exercises.sh
+```
+
+### 💡 Learning Tips
+
+**For Beginners:**
+- Start with `run_all_exercises.sh` for guided learning
+- Read output carefully - each command is explained
+- Take notes on interesting commands
+- Re-run individual exercises to reinforce concepts
+
+**For Advanced Users:**
+- Modify scripts to analyze different aspects
+- Experiment with optimization parameters
+- Create custom MapReduce jobs
+- Load your own datasets for analysis
+
+### 🎯 Learning Objectives
+
+After completing all exercises, you will be able to:
+- ✅ **HDFS:** Manage distributed file storage effectively
+- ✅ **MapReduce:** Write and run data processing jobs
+- ✅ **Hive:** Optimize SQL queries on big data
+- ✅ **Spark:** Perform advanced analytics and tuning
+- ✅ **Integration:** Understand how components work together
+
 ## Key Learning Areas
 
 ### 1. HDFS Operations
