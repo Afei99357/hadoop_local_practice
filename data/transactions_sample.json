@@ -1,0 +1,38 @@
+[
+  {
+    "transaction_id": "TXN000001",
+    "customer_id": "CUST0001",
+    "product_id": "P001",
+    "product_name": "Laptop",
+    "category": "Electronics",
+    "quantity": 1,
+    "unit_price": 999.99,
+    "total_amount": 999.99,
+    "transaction_date": "2024-01-15",
+    "transaction_time": "09:30:00",
+    "city": "New York",
+    "payment_method": "Credit Card",
+    "discount": 0.00,
+    "year": 2024,
+    "month": 1,
+    "day": 15
+  },
+  {
+    "transaction_id": "TXN000002",
+    "customer_id": "CUST0002",
+    "product_id": "P002",
+    "product_name": "Phone",
+    "category": "Electronics",
+    "quantity": 2,
+    "unit_price": 699.99,
+    "total_amount": 1399.98,
+    "transaction_date": "2024-01-15",
+    "transaction_time": "10:45:00",
+    "city": "Los Angeles",
+    "payment_method": "Debit Card",
+    "discount": 139.99,
+    "year": 2024,
+    "month": 1,
+    "day": 15
+  }
+]
