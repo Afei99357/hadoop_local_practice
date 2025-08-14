@@ -133,7 +133,7 @@ sudo docker exec hive-server beeline -u jdbc:hive2://localhost:10000 -f /scripts
 
 # Stop everything
 sudo docker-compose down
-claude
+
 # Complete cleanup
 sudo docker-compose down -v
 ```
