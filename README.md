@@ -86,6 +86,9 @@ ln -sf /opt/conda/bin/python /usr/local/bin/python3
 
 # Verify the upgrade
 python3 --version  # Should show Python 3.9.x
+
+# exit iterative mode
+ctrl + D
 ```
 
 After this upgrade, the MapReduce Python jobs should work correctly with f-string syntax.
