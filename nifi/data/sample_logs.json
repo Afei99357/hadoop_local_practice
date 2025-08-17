@@ -1,0 +1,104 @@
+[
+  {
+    "timestamp": "2024-01-15T10:00:00Z",
+    "level": "INFO",
+    "service": "auth-service",
+    "message": "User login successful",
+    "user_id": "user123",
+    "ip_address": "192.168.1.100",
+    "user_agent": "Mozilla/5.0",
+    "session_id": "sess_abc123",
+    "response_time_ms": 145
+  },
+  {
+    "timestamp": "2024-01-15T10:00:01Z",
+    "level": "ERROR",
+    "service": "payment-service",
+    "message": "Payment processing failed",
+    "transaction_id": "txn_456def",
+    "error_code": "INSUFFICIENT_FUNDS",
+    "amount": 299.99,
+    "currency": "USD",
+    "retry_count": 2
+  },
+  {
+    "timestamp": "2024-01-15T10:00:02Z",
+    "level": "WARN",
+    "service": "inventory-service",
+    "message": "Low stock alert",
+    "product_id": "PROD789",
+    "current_stock": 5,
+    "threshold": 10,
+    "warehouse": "WH-001"
+  },
+  {
+    "timestamp": "2024-01-15T10:00:03Z",
+    "level": "INFO",
+    "service": "order-service",
+    "message": "Order placed successfully",
+    "order_id": "ORD-2024-001",
+    "customer_id": "CUST456",
+    "total_amount": 599.99,
+    "items_count": 3,
+    "shipping_method": "express"
+  },
+  {
+    "timestamp": "2024-01-15T10:00:04Z",
+    "level": "DEBUG",
+    "service": "cache-service",
+    "message": "Cache hit",
+    "key": "product_catalog_v2",
+    "hit_rate": 0.87,
+    "ttl_remaining": 3600
+  },
+  {
+    "timestamp": "2024-01-15T10:00:05Z",
+    "level": "ERROR",
+    "service": "email-service",
+    "message": "Email delivery failed",
+    "recipient": "user@example.com",
+    "error": "Connection timeout",
+    "retry_attempt": 1,
+    "queue_size": 45
+  },
+  {
+    "timestamp": "2024-01-15T10:00:06Z",
+    "level": "INFO",
+    "service": "analytics-service",
+    "message": "Daily report generated",
+    "report_type": "sales_summary",
+    "date": "2024-01-14",
+    "total_transactions": 1523,
+    "total_revenue": 45678.90
+  },
+  {
+    "timestamp": "2024-01-15T10:00:07Z",
+    "level": "WARN",
+    "service": "api-gateway",
+    "message": "Rate limit approaching",
+    "client_id": "API_CLIENT_789",
+    "current_requests": 950,
+    "limit": 1000,
+    "window": "1h"
+  },
+  {
+    "timestamp": "2024-01-15T10:00:08Z",
+    "level": "INFO",
+    "service": "search-service",
+    "message": "Search query executed",
+    "query": "wireless headphones",
+    "results_count": 127,
+    "response_time_ms": 89,
+    "filters_applied": ["price", "brand", "rating"]
+  },
+  {
+    "timestamp": "2024-01-15T10:00:09Z",
+    "level": "CRITICAL",
+    "service": "database-service",
+    "message": "Database connection pool exhausted",
+    "pool_name": "primary_pool",
+    "active_connections": 100,
+    "max_connections": 100,
+    "waiting_requests": 15
+  }
+]

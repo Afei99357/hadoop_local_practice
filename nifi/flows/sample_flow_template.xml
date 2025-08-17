@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Sample NiFi Flow Template: CSV to HDFS Pipeline -->
+<!-- This template demonstrates a basic ingestion pattern -->
+<template>
+    <name>CSV_to_HDFS_Pipeline</name>
+    <description>
+        Basic pipeline that ingests CSV files and writes them to HDFS.
+        Includes error handling and data validation.
+    </description>
+    
+    <!-- Flow Structure Overview:
+    
+    GetFile (Read CSV) 
+        ↓
+    ValidateRecord (Schema Validation)
+        ↓ success        ↓ failure
+    UpdateAttribute     RouteToError
+        ↓                    ↓
+    ConvertRecord       LogAttribute
+    (CSV to Parquet)         ↓
+        ↓                PutFile (Error)
+    PutHDFS
+    
+    -->
+    
+    <processors>
+        <!-- GetFile Processor Configuration -->
+        <processor>
+            <name>GetFile</name>
+            <type>org.apache.nifi.processors.standard.GetFile</type>
+            <properties>
+                <property name="Input Directory">/opt/nifi/data</property>
+                <property name="File Filter">.*\.csv</property>
+                <property name="Keep Source File">true</property>
+                <property name="Recurse Subdirectories">false</property>
+                <property name="Polling Interval">60 sec</property>
+                <property name="Batch Size">10</property>
+                <property name="Max File Size">100 MB</property>
+            </properties>
+        </processor>
+        
+        <!-- ValidateRecord Processor -->
+        <processor>
+            <name>ValidateRecord</name>
+            <type>org.apache.nifi.processors.standard.ValidateRecord</type>
+            <properties>
+                <property name="Record Reader">CSVReader</property>
+                <property name="Record Writer">CSVRecordWriter</property>
+                <property name="Schema Access Strategy">Use Schema Text Property</property>
+                <property name="Schema Text">
+                {
+                  "type": "record",
+                  "name": "SensorData",
+                  "fields": [
+                    {"name": "timestamp", "type": "string"},
+                    {"name": "sensor_id", "type": "string"},
+                    {"name": "location", "type": "string"},
+                    {"name": "temperature", "type": "double"},
+                    {"name": "humidity", "type": "double"},
+                    {"name": "pressure", "type": "double"},
+                    {"name": "battery_level", "type": "int"},
+                    {"name": "status", "type": "string"}
+                  ]
+                }
+                </property>
+            </properties>
+        </processor>
+        
+        <!-- UpdateAttribute Processor -->
+        <processor>
+            <name>UpdateAttribute</name>
+            <type>org.apache.nifi.processors.attributes.UpdateAttribute</type>
+            <properties>
+                <property name="ingestion.timestamp">${now():format('yyyy-MM-dd HH:mm:ss')}</property>
+                <property name="data.source">nifi-csv-ingestion</property>
+                <property name="hdfs.path">/user/nifi/data/${now():format('yyyy/MM/dd')}</property>
+                <property name="filename">${filename:substringBeforeLast('.')}_${now():toNumber()}.parquet</property>
+            </properties>
+        </processor>
+        
+        <!-- ConvertRecord Processor -->
+        <processor>
+            <name>ConvertRecord</name>
+            <type>org.apache.nifi.processors.standard.ConvertRecord</type>
+            <properties>
+                <property name="Record Reader">CSVReader</property>
+                <property name="Record Writer">ParquetRecordWriter</property>
+                <property name="Include Zero Record FlowFiles">false</property>
+            </properties>
+        </processor>
+        
+        <!-- PutHDFS Processor -->
+        <processor>
+            <name>PutHDFS</name>
+            <type>org.apache.nifi.processors.hadoop.PutHDFS</type>
+            <properties>
+                <property name="Hadoop Configuration Files">/opt/nifi/conf/core-site.xml</property>
+                <property name="Directory">${hdfs.path}</property>
+                <property name="Conflict Resolution Strategy">replace</property>
+                <property name="Block Size">128 MB</property>
+                <property name="Replication">3</property>
+                <property name="Compression Type">SNAPPY</property>
+            </properties>
+        </processor>
+        
+        <!-- LogAttribute for Error Handling -->
+        <processor>
+            <name>LogAttribute</name>
+            <type>org.apache.nifi.processors.standard.LogAttribute</type>
+            <properties>
+                <property name="Log Level">error</property>
+                <property name="Log Payload">true</property>
+                <property name="Attributes to Log">.*</property>
+            </properties>
+        </processor>
+        
+        <!-- PutFile for Error Records -->
+        <processor>
+            <name>PutFile_Error</name>
+            <type>org.apache.nifi.processors.standard.PutFile</type>
+            <properties>
+                <property name="Directory">/opt/nifi/data/errors</property>
+                <property name="Conflict Resolution Strategy">rename</property>
+                <property name="Create Missing Directories">true</property>
+            </properties>
+        </processor>
+    </processors>
+    
+    <!-- Controller Services -->
+    <controllerServices>
+        <!-- CSV Reader Service -->
+        <controllerService>
+            <name>CSVReader</name>
+            <type>org.apache.nifi.csv.CSVReader</type>
+            <properties>
+                <property name="Schema Access Strategy">Use Schema Text Property</property>
+                <property name="CSV Format">RFC4180</property>
+                <property name="First Line is Header">true</property>
+                <property name="Ignore CSV Header">false</property>
+                <property name="Quote Character">"</property>
+                <property name="Escape Character">\</property>
+                <property name="Comment Marker">#</property>
+            </properties>
+        </controllerService>
+        
+        <!-- Parquet Writer Service -->
+        <controllerService>
+            <name>ParquetRecordWriter</name>
+            <type>org.apache.nifi.parquet.ParquetRecordSetWriter</type>
+            <properties>
+                <property name="Schema Write Strategy">Embed Avro Schema</property>
+                <property name="Compression Type">SNAPPY</property>
+                <property name="Page Size">1 MB</property>
+                <property name="Dictionary Encoding">true</property>
+            </properties>
+        </controllerService>
+    </controllerServices>
+    
+    <!-- Connections -->
+    <connections>
+        <connection>
+            <source>GetFile</source>
+            <destination>ValidateRecord</destination>
+            <relationship>success</relationship>
+        </connection>
+        
+        <connection>
+            <source>ValidateRecord</source>
+            <destination>UpdateAttribute</destination>
+            <relationship>valid</relationship>
+        </connection>
+        
+        <connection>
+            <source>ValidateRecord</source>
+            <destination>LogAttribute</destination>
+            <relationship>invalid</relationship>
+        </connection>
+        
+        <connection>
+            <source>UpdateAttribute</source>
+            <destination>ConvertRecord</destination>
+            <relationship>success</relationship>
+        </connection>
+        
+        <connection>
+            <source>ConvertRecord</source>
+            <destination>PutHDFS</destination>
+            <relationship>success</relationship>
+        </connection>
+        
+        <connection>
+            <source>ConvertRecord</source>
+            <destination>LogAttribute</destination>
+            <relationship>failure</relationship>
+        </connection>
+        
+        <connection>
+            <source>LogAttribute</source>
+            <destination>PutFile_Error</destination>
+            <relationship>success</relationship>
+        </connection>
+        
+        <connection>
+            <source>PutHDFS</source>
+            <destination>Success</destination>
+            <relationship>success</relationship>
+        </connection>
+        
+        <connection>
+            <source>PutHDFS</source>
+            <destination>LogAttribute</destination>
+            <relationship>failure</relationship>
+        </connection>
+    </connections>
+</template>

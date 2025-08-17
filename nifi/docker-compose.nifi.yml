@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  nifi:
+    image: apache/nifi:1.23.2
+    container_name: nifi
+    restart: always
+    ports:
+      - 8090:8080  # NiFi UI (HTTP)
+    environment:
+      # Single user authentication
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=nifiadminpassword123
+      
+      # JVM memory settings
+      - NIFI_JVM_HEAP_INIT=512m
+      - NIFI_JVM_HEAP_MAX=2g
+      
+    volumes:
+      # Persistent storage for flows and configuration
+      - nifi_conf:/opt/nifi/nifi-current/conf
+      - nifi_logs:/opt/nifi/nifi-current/logs
+      - nifi_database:/opt/nifi/nifi-current/database_repository
+      - nifi_flowfile:/opt/nifi/nifi-current/flowfile_repository
+      - nifi_content:/opt/nifi/nifi-current/content_repository
+      - nifi_provenance:/opt/nifi/nifi-current/provenance_repository
+      - nifi_state:/opt/nifi/nifi-current/state
+      
+      # Mount local directories for data exchange
+      - ./data:/opt/nifi/data
+      - ./flows:/opt/nifi/flows
+      - ./scripts:/opt/nifi/scripts
+      
+    networks:
+      - hadoop_default  # Connect to existing Hadoop network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/nifi-api/system-diagnostics"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # NiFi Registry for version control of flows
+  nifi-registry:
+    image: apache/nifi-registry:1.23.2
+    container_name: nifi-registry
+    restart: always
+    ports:
+      - 18080:18080
+    environment:
+      - NIFI_REGISTRY_WEB_HTTP_PORT=18080
+    volumes:
+      - nifi_registry_data:/opt/nifi-registry/nifi-registry-current/database
+      - nifi_registry_flow:/opt/nifi-registry/nifi-registry-current/flow_storage
+    networks:
+      - hadoop_default
+
+volumes:
+  nifi_conf:
+  nifi_logs:
+  nifi_database:
+  nifi_flowfile:
+  nifi_content:
+  nifi_provenance:
+  nifi_state:
+  nifi_registry_data:
+  nifi_registry_flow:
+
+networks:
+  hadoop_default:
+    name: hadoop_practice_default
+    external: true  # Use the existing Hadoop network

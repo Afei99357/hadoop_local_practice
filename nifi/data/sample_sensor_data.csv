@@ -1,0 +1,21 @@
+timestamp,sensor_id,location,temperature,humidity,pressure,battery_level,status
+2024-01-15 10:00:00,SENS001,Building-A-Floor1,22.5,45.2,1013.25,95,active
+2024-01-15 10:00:01,SENS002,Building-A-Floor2,23.1,44.8,1013.20,88,active
+2024-01-15 10:00:02,SENS003,Building-B-Floor1,21.8,46.5,1013.30,92,active
+2024-01-15 10:00:03,SENS004,Building-B-Floor2,24.2,43.2,1013.15,76,active
+2024-01-15 10:00:04,SENS005,Building-C-Floor1,22.9,45.8,1013.28,81,active
+2024-01-15 10:00:05,SENS001,Building-A-Floor1,22.6,45.1,1013.24,95,active
+2024-01-15 10:00:06,SENS002,Building-A-Floor2,23.2,44.7,1013.19,88,active
+2024-01-15 10:00:07,SENS003,Building-B-Floor1,21.7,46.6,1013.31,92,warning
+2024-01-15 10:00:08,SENS004,Building-B-Floor2,24.3,43.1,1013.14,75,active
+2024-01-15 10:00:09,SENS005,Building-C-Floor1,23.0,45.7,1013.27,81,active
+2024-01-15 10:00:10,SENS001,Building-A-Floor1,22.7,45.0,1013.23,94,active
+2024-01-15 10:00:11,SENS002,Building-A-Floor2,23.3,44.6,1013.18,87,active
+2024-01-15 10:00:12,SENS003,Building-B-Floor1,21.6,46.7,1013.32,91,error
+2024-01-15 10:00:13,SENS004,Building-B-Floor2,24.4,43.0,1013.13,75,active
+2024-01-15 10:00:14,SENS005,Building-C-Floor1,23.1,45.6,1013.26,80,active
+2024-01-15 10:00:15,SENS006,Building-D-Floor1,25.2,42.3,1013.10,68,active
+2024-01-15 10:00:16,SENS007,Building-D-Floor2,26.1,41.5,1013.08,55,warning
+2024-01-15 10:00:17,SENS008,Building-E-Floor1,20.5,48.2,1013.35,90,active
+2024-01-15 10:00:18,SENS009,Building-E-Floor2,19.8,49.1,1013.38,85,active
+2024-01-15 10:00:19,SENS010,Building-F-Floor1,22.3,45.5,1013.22,78,active

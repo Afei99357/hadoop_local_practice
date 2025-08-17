@@ -333,3 +333,4 @@ docker-compose down -v
 4. Integrate with cloud storage (S3/Azure)
 5. Build a real-time dashboard
 6. Implement data quality checks
+7. **NEW: Practice NiFi data pipelines** - See `nifi/README.md` for hands-on NiFi to Databricks migration exercises

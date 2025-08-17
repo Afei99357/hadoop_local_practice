@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- 
+NiFi Template: CSV to HDFS Pipeline
+Description: Basic file ingestion pipeline that reads CSV files from local directory and writes to HDFS
+Created: Exercise 1 - Basic File Ingestion to HDFS
+-->
+<template encoding-version="1.4">
+    <description>Basic CSV file ingestion pipeline that reads files from local directory and writes to HDFS with error handling</description>
+    <groupId>root</groupId>
+    <name>CSV_to_HDFS_Pipeline</name>
+    <snippet>
+        <processGroups>
+            <id>root-group</id>
+            <parentGroupId></parentGroupId>
+            <position>
+                <x>0.0</x>
+                <y>0.0</y>
+            </position>
+            <comments></comments>
+            <name>CSV to HDFS Pipeline</name>
+            
+            <!-- GetFile Processor -->
+            <processors>
+                <id>getfile-processor</id>
+                <parentGroupId>root-group</parentGroupId>
+                <position>
+                    <x>100.0</x>
+                    <y>100.0</y>
+                </position>
+                <bundle>
+                    <artifact>nifi-standard-nar</artifact>
+                    <group>org.apache.nifi</group>
+                    <version>1.23.2</version>
+                </bundle>
+                <config>
+                    <bulletinLevel>WARN</bulletinLevel>
+                    <comments>Reads CSV files from local directory</comments>
+                    <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                    <descriptors>
+                        <entry>
+                            <key>Input Directory</key>
+                            <value>/opt/nifi/nifi-current/data</value>
+                        </entry>
+                        <entry>
+                            <key>File Filter</key>
+                            <value>.*\.csv</value>
+                        </entry>
+                        <entry>
+                            <key>Keep Source File</key>
+                            <value>true</value>
+                        </entry>
+                        <entry>
+                            <key>Polling Interval</key>
+                            <value>10 sec</value>
+                        </entry>
+                    </descriptors>
+                    <executionNode>ALL</executionNode>
+                    <lossTolerant>false</lossTolerant>
+                    <penaltyDuration>30 sec</penaltyDuration>
+                    <properties>
+                        <entry>
+                            <key>Input Directory</key>
+                            <value>/opt/nifi/nifi-current/data</value>
+                        </entry>
+                        <entry>
+                            <key>File Filter</key>
+                            <value>.*\.csv</value>
+                        </entry>
+                        <entry>
+                            <key>Keep Source File</key>
+                            <value>true</value>
+                        </entry>
+                        <entry>
+                            <key>Polling Interval</key>
+                            <value>10 sec</value>
+                        </entry>
+                    </properties>
+                    <runDurationMillis>0</runDurationMillis>
+                    <schedulingPeriod>0 sec</schedulingPeriod>
+                    <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                    <yieldDuration>1 sec</yieldDuration>
+                </config>
+                <name>GetFile - CSV Reader</name>
+                <relationships>
+                    <autoTerminate>false</autoTerminate>
+                    <name>success</name>
+                </relationships>
+                <state>STOPPED</state>
+                <style/>
+                <type>org.apache.nifi.processors.standard.GetFile</type>
+            </processors>
+            
+            <!-- PutHDFS Processor -->
+            <processors>
+                <id>puthdfs-processor</id>
+                <parentGroupId>root-group</parentGroupId>
+                <position>
+                    <x>400.0</x>
+                    <y>100.0</y>
+                </position>
+                <bundle>
+                    <artifact>nifi-hadoop-nar</artifact>
+                    <group>org.apache.nifi</group>
+                    <version>1.23.2</version>
+                </bundle>
+                <config>
+                    <bulletinLevel>WARN</bulletinLevel>
+                    <comments>Writes files to HDFS</comments>
+                    <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
+                    <descriptors>
+                        <entry>
+                            <key>Hadoop Configuration Files</key>
+                            <value>/opt/nifi/nifi-current/conf/core-site.xml</value>
+                        </entry>
+                        <entry>
+                            <key>Directory</key>
+                            <value>/user/nifi/sensor_data</value>
+                        </entry>
+                        <entry>
+                            <key>Conflict Resolution Strategy</key>
+                            <value>replace</value>
+                        </entry>
+                    </descriptors>
+                    <executionNode>ALL</executionNode>
+                    <lossTolerant>false</lossTolerant>
+                    <penaltyDuration>30 sec</penaltyDuration>
+                    <properties>
+                        <entry>
+                            <key>Hadoop Configuration Files</key>
+                            <value>/opt/nifi/nifi-current/conf/core-site.xml</value>
+                        </entry>
+                        <entry>
+                            <key>Directory</key>
+                            <value>/user/nifi/sensor_data</value>
+                        </entry>
+                        <entry>
+                            <key>Conflict Resolution Strategy</key>
+                            <value>replace</value>
+                        </entry>
+                    </properties>
+                    <runDurationMillis>0</runDurationMillis>
+                    <schedulingPeriod>0 sec</schedulingPeriod>
+                    <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+                    <yieldDuration>1 sec</yieldDuration>
+                </config>
+                <name>PutHDFS - Write to Hadoop</name>
+                <relationships>
+                    <autoTerminate>true</autoTerminate>
+                    <name>failure</name>
+                </relationships>
+                <relationships>
+                    <autoTerminate>true</autoTerminate>
+                    <name>success</name>
+                </relationships>
+                <state>STOPPED</state>
+                <style/>
+                <type>org.apache.nifi.processors.hadoop.PutHDFS</type>
+            </processors>
+            
+            <!-- Connection between processors -->
+            <connections>
+                <id>getfile-to-puthdfs</id>
+                <parentGroupId>root-group</parentGroupId>
+                <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
+                <backPressureObjectThreshold>10000</backPressureObjectThreshold>
+                <destination>
+                    <groupId>root-group</groupId>
+                    <id>puthdfs-processor</id>
+                    <type>PROCESSOR</type>
+                </destination>
+                <flowFileExpiration>0 sec</flowFileExpiration>
+                <labelIndex>1</labelIndex>
+                <name></name>
+                <selectedRelationships>success</selectedRelationships>
+                <source>
+                    <groupId>root-group</groupId>
+                    <id>getfile-processor</id>
+                    <type>PROCESSOR</type>
+                </source>
+                <zIndex>0</zIndex>
+            </connections>
+        </processGroups>
+    </snippet>
+    <timestamp>2025-08-14T17:55:00.000Z</timestamp>
+</template>
