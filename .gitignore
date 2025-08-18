@@ -12,3 +12,5 @@ wheels/
 # Environment files with secrets
 .env
 nifi/scripts/.env
+replace.txt.removed
+repo-backup.bundle
