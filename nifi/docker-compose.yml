@@ -6,6 +6,7 @@ services:
     container_name: nifi
     ports:
       - "8090:8080"
+    user: "root"
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=admin
       - SINGLE_USER_CREDENTIALS_PASSWORD=nifiadminpassword123
@@ -13,6 +14,14 @@ services:
       - NIFI_WEB_HTTPS_PORT=
       - NIFI_JVM_HEAP_INIT=512m
       - NIFI_JVM_HEAP_MAX=2g
+    volumes:
+      - ./nifi-data/state:/opt/nifi/nifi-current/state
+      - ./nifi-data/logs:/opt/nifi/nifi-current/logs
+      - ./nifi-data/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - ./nifi-data/database_repository:/opt/nifi/nifi-current/database_repository
+      - ./nifi-data/content_repository:/opt/nifi/nifi-current/content_repository
+      - ./nifi-data/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - ./core-site.xml:/opt/nifi/nifi-current/conf/core-site.xml:ro
     networks:
       - hadoop_practice_default
 
@@ -21,6 +30,8 @@ services:
     container_name: nifi-registry
     ports:
       - "18080:18080"
+    volumes:
+      - ./nifi-registry-data:/opt/nifi-registry/nifi-registry-current/database
     networks:
       - hadoop_practice_default
 
